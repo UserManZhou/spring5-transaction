@@ -5,9 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Configuration
 @ComponentScan(
@@ -21,6 +25,7 @@ import org.springframework.stereotype.Service;
         }
 )
 @PropertySource(value = "db.properties")
+@EnableTransactionManagement
 public class SpringConfig {
     @Value("${jdbc.driverClassName}")
     private String driverClassName;
@@ -44,5 +49,10 @@ public class SpringConfig {
     @Bean
     public JdbcTemplate jdbcTemplate(){
         return new JdbcTemplate(druidDataSource());
+    }
+
+    @Bean
+    public DataSourceTransactionManager dataSourceTransactionManager(){
+        return new DataSourceTransactionManager(druidDataSource());
     }
 }
